@@ -42,7 +42,6 @@
             this.load.image('clouds', 'assets/clouds1.png');
             this.load.image('platform', 'assets/misil1.png');
             this.load.image('ice-platform', 'assets/block2.png');
-            this.load.image('estrella', 'assets/estrella.png');
             this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
         },
 
@@ -50,35 +49,46 @@
             this.stage.backgroundColor = '#2f9acc';
             this.sky = this.add.tileSprite(0, 0, 640, 480, 'clouds');
             this.sky.fixedToCamera = true;
-
+            /* Agregamos el paisaje. */
             for (var i = 0; i < 2000; i = i + 100)
             {
+            	this.add.sprite(i, 1930, 'brush2');
             	this.add.sprite(i, 1967, 'brush');
-            	this.add.sprite(i + 200, 1930, 'brush2');
+            	
             }
-
-            /*
-            this.add.sprite(300, 1967, 'brush');
-            this.add.sprite(100, 1967, 'brush');
-            this.add.sprite(200, 1967, 'brush');
-
-            this.add.sprite(500, 1930, 'brush2');
-            */
-
+            /* A partir de aquí las imagenes tienen colisiones. */
             this.platforms = this.add.physicsGroup();
-            this.platforms.create(100, 1899, 'block');
-            this.platforms.create(300, 1799, 'block');
+            /* Agregamos el piso. y los bloques */
             for (var i = 0; i < 2000; i = i + 135)
             {
+            	var y = this.rnd.between(1800, 1900);
             	this.platforms.create(i, 1984, 'floor');
+            	if (i % 7 == 0 && i != 0)
+            	{
+            		this.platforms.create(i,y, 'block');
+            		this.platforms.create(i+30, y, 'block');
+            	}
+            	y = this.rnd.between(1600, 1900);
+            	if (i % 4 == 0 && i != 0)
+            	{
+            		this.platforms.create(i,y, 'block');
+            		this.platforms.create(i+30, y, 'block');
+            		this.platforms.create(i+60, y, 'block');
+            	}
+            	y = this.rnd.between(1600, 1900);
+            	if (i % 11 == 0 % i != 0)
+            	{
+            		this.platforms.create(i, y, 'block');
+            	}
+
             }
+            /* Agregamos los enemigos. */
             var x = 0;
             var y = 64;
             for (var i = 0; i < 19; i++)
             {
                 var type = i % 2 === 1 ? 'platform' : 'ice-platform';
-                this.platforms.create(x+5, y+10, 'block');
-                this.add.sprite(x+8, y-12, 'estrella');
+                //this.platforms.create(x+5, y+10, 'block');
                 var platform = this.platforms.create(x, y, type);
                 //  Set a random speed between 50 and 200
                 platform.body.velocity.x = this.rnd.between(100, 150);
