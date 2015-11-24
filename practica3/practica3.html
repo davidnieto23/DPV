@@ -26,13 +26,16 @@
 
         init: function () {
             this.game.renderer.renderSession.roundPixels = true;
-            this.world.resize(2000, 2000);
+            this.world.resize(2000, 480);
             this.physics.startSystem(Phaser.Physics.ARCADE);
             this.physics.arcade.gravity.y = 750;
             this.physics.arcade.skipQuadTree = false;
 
         },
 
+        /**
+         * Cargamos los splites necesarios.
+         */
         preload: function () {
             this.load.crossOrigin = 'anonymous';
             this.load.image('block', 'assets/block.png');
@@ -40,8 +43,7 @@
             this.load.image('brush2', 'assets/brush2.png');
             this.load.image('floor', 'assets/floor.png');
             this.load.image('clouds', 'assets/clouds1.png');
-            this.load.image('platform', 'assets/misil1.png');
-            this.load.image('ice-platform', 'assets/block2.png');
+            this.load.image('misil', 'assets/misil1.png');
             this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
         },
 
@@ -50,10 +52,12 @@
             this.sky = this.add.tileSprite(0, 0, 640, 480, 'clouds');
             this.sky.fixedToCamera = true;
             /* Agregamos el paisaje. */
-            for (var i = 0; i < 2000; i = i + 100)
+            for (var i = 0; i < 1000; i = i + 100)
             {
-            	this.add.sprite(i, 1930, 'brush2');
-            	this.add.sprite(i, 1967, 'brush');
+            	var r = this.rnd.between(1, 5);
+            	this.add.sprite(i*r, 401, 'brush2');
+            	r = this.rnd.between(1, 5);
+            	this.add.sprite(i*5, 449, 'brush');
             	
             }
             /* A partir de aquí las imagenes tienen colisiones. */
@@ -61,21 +65,21 @@
             /* Agregamos el piso. y los bloques */
             for (var i = 0; i < 2000; i = i + 135)
             {
-            	var y = this.rnd.between(1800, 1900);
-            	this.platforms.create(i, 1984, 'floor');
+            	var y = this.rnd.between(300, 400);
+            	this.platforms.create(i, 465, 'floor');
             	if (i % 7 == 0 && i != 0)
             	{
             		this.platforms.create(i,y, 'block');
             		this.platforms.create(i+30, y, 'block');
             	}
-            	y = this.rnd.between(1600, 1900);
+            	y = this.rnd.between(300, 400);
             	if (i % 4 == 0 && i != 0)
             	{
             		this.platforms.create(i,y, 'block');
             		this.platforms.create(i+30, y, 'block');
             		this.platforms.create(i+60, y, 'block');
             	}
-            	y = this.rnd.between(1600, 1900);
+            	y = this.rnd.between(300, 400);
             	if (i % 11 == 0 % i != 0)
             	{
             		this.platforms.create(i, y, 'block');
@@ -85,20 +89,13 @@
             /* Agregamos los enemigos. */
             var x = 0;
             var y = 64;
-            for (var i = 0; i < 19; i++)
+            for (var i = 0; i < 30; i++)
             {
-                var type = i % 2 === 1 ? 'platform' : 'ice-platform';
-                //this.platforms.create(x+5, y+10, 'block');
-                var platform = this.platforms.create(x, y, type);
-                //  Set a random speed between 50 and 200
+                var platform = this.platforms.create(x, y, 'misil');
                 platform.body.velocity.x = this.rnd.between(100, 150);
-                //  Inverse it?
-                if (Math.random() > 0.5)
-                {
-                    platform.body.velocity.x *= -1;
-                }
+                platform.body.velocity.x *= -1; // inverso
                 x += 200;
-                if (x >= 600)
+                if (x >= 1900)
                 {
                     x = 0;
                 }
@@ -106,7 +103,7 @@
             }
             this.platforms.setAll('body.allowGravity', false);
             this.platforms.setAll('body.immovable', true);
-            this.player = this.add.sprite(320, 1952, 'dude');
+            this.player = this.add.sprite(320, 300, 'dude');
             this.physics.arcade.enable(this.player);
             this.player.body.collideWorldBounds = true;
             this.player.body.setSize(20, 32, 5, 16);
@@ -128,17 +125,20 @@
             }
         },
 
-        setFriction: function (player, platform) {
-            if (platform.key === 'ice-platform')
+        /**
+         * Si el jugador es tocado por un enemigo, lo desaparecemos. 
+         */
+        muere: function (player, platform) {
+            if (platform.key === 'misil' && platform.x-10 > player.x) // si está de frente
             {
-                player.body.x -= platform.body.x - platform.body.prev.x;
+            	player.kill();
             }
         },
 
         update: function () {
             this.sky.tilePosition.y = -(this.camera.y * 0.7);
             this.platforms.forEach(this.wrapPlatform, this);
-            this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
+            this.physics.arcade.collide(this.player, this.platforms, this.muere, null, this);
             //  Do this AFTER the collide check, or we won't have blocked/touching set
             var standing = this.player.body.blocked.down || this.player.body.touching.down;
             this.player.body.velocity.x = 0;
