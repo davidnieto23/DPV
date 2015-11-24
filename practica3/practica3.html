@@ -26,7 +26,7 @@
 
         init: function () {
             this.game.renderer.renderSession.roundPixels = true;
-            this.world.resize(640, 2000);
+            this.world.resize(2000, 2000);
             this.physics.startSystem(Phaser.Physics.ARCADE);
             this.physics.arcade.gravity.y = 750;
             this.physics.arcade.skipQuadTree = false;
@@ -50,16 +50,25 @@
             this.stage.backgroundColor = '#2f9acc';
             this.sky = this.add.tileSprite(0, 0, 640, 480, 'clouds');
             this.sky.fixedToCamera = true;
+
+            for (var i = 0; i < 2000; i = i + 100)
+            {
+            	this.add.sprite(i, 1967, 'brush');
+            	this.add.sprite(i + 200, 1930, 'brush2');
+            }
+
+            /*
             this.add.sprite(300, 1967, 'brush');
             this.add.sprite(100, 1967, 'brush');
             this.add.sprite(200, 1967, 'brush');
 
             this.add.sprite(500, 1930, 'brush2');
+            */
 
             this.platforms = this.add.physicsGroup();
             this.platforms.create(100, 1899, 'block');
             this.platforms.create(300, 1799, 'block');
-            for (var i = 0; i < 544; i = i + 135)
+            for (var i = 0; i < 2000; i = i + 135)
             {
             	this.platforms.create(i, 1984, 'floor');
             }
@@ -101,9 +110,9 @@
         wrapPlatform: function (platform) {
             if (platform.body.velocity.x < 0 && platform.x <= -160)
             {
-                platform.x = 640;
+                platform.x = 2000;
             }
-            else if (platform.body.velocity.x > 0 && platform.x >= 640)
+            else if (platform.body.velocity.x > 0 && platform.x >= 2000)
             {
                 platform.x = -160;
             }
