@@ -46,6 +46,7 @@
             this.load.image('floor', 'assets/floor.png');
             this.load.image('clouds', 'assets/clouds1.png');
             this.load.image('misil', 'assets/misil1.png');
+            this.load.image('estrella', 'assets/estrella.gif');
             this.load.spritesheet('dude', 'assets/mario.png', 16, 27);
             this.load.spritesheet('enemigo', 'assets/goomba.png', 16, 16);
         },
@@ -54,6 +55,7 @@
             this.stage.backgroundColor = '#2f9acc';
             this.sky = this.add.tileSprite(0, 0, 640, 480, 'clouds');
             this.sky.fixedToCamera = true;
+            this.add.sprite(320, 400, 'estrella');
             /* Agregamos el paisaje. */
             for (var i = 0; i < 1000; i = i + 100)
             {
