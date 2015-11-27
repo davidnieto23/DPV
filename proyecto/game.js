@@ -1,6 +1,4 @@
-/* Made by Nambiar - Game Dolphin 
 
-Feel free to use and learn from */
 
 Game.PlayGame = function(game){
 
@@ -36,6 +34,10 @@ Game.PlayGame.prototype = {
 
 	create : function(){
 
+
+        music = this.game.add.audio('song');
+        music.play('',0,1,true,false);
+
 		this.bck = this.game.add.sprite(0,0,'bck');
 
 		this.game.world.bounds.x = 21;
@@ -46,6 +48,7 @@ Game.PlayGame.prototype = {
 
 		this.game.world.bounds.height = 590;
 
+//(this.game,this.game.world.centerX,189,this.chooseblock(),this.choosecolor(),1);
 
 		this.focusblock = new Block(this.game,this.game.world.centerX,-40,this.chooseblock(),this.choosecolor(),1);
 
@@ -123,6 +126,7 @@ Game.PlayGame.prototype = {
 	resetbuttondown : function(){
 
 		this.game.state.start('MainMenu');
+
 
 
 	},

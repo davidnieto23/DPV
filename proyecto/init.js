@@ -2,15 +2,17 @@
 
 Feel free to use and learn from */
 
-var w = 400, h = 600;
 
-var gamevar = new Phaser.Game(w,h,Phaser.AUTO,'container');
+
+var gamevar = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.CANVAS,'gameContainer');
 
 gamevar.state.add('Load',Game.Load);
 
 gamevar.state.add('MainMenu',Game.MainMenu);
 
 gamevar.state.add('Game',Game.PlayGame);
+
+gamevar.state.add('Mapa',Game.MapScreen);
 
 gamevar.state.add('Lose',Game.LoseScreen);
 
